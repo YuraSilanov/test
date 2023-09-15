@@ -1,5 +1,3 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -11,4 +9,3 @@ import './styles/main.scss'
 const app = createApp(App)
 app.use(VueAxios, axios)
 createApp(App).mount('#app')
-

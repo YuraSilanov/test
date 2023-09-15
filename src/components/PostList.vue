@@ -3,7 +3,7 @@
     <ul v-if="propData.length" class="post-list__ul">
       <li v-for="(item, id) in propData" :key="id">{{ item.title }}</li>
     </ul>
-    <div class="post-list__empty">
+    <div v-else class="post-list__empty">
       <strong>По вашему фильтру ничего не найдено(</strong>
     </div>
   </div>

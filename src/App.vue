@@ -24,7 +24,9 @@ const delayedUpdate = debounce(() => {
   if (!inputValue.value) {
     filteredPosts.value = posts
   } else {
-    filteredPosts.value = posts.filter((post) => post.title.includes(inputValue.value))
+    filteredPosts.value = posts.filter((post) =>
+      post.title.toLowerCase().includes(inputValue.value.toLowerCase())
+    )
   }
 }, 500)
 

@@ -1,7 +1,7 @@
 <template>
-  <div class="post-list">
-    <div class="post-list__item" v-for="(item, id) in propData" :key="id">{{ item.title }}</div>
-  </div>
+  <ul class="post-list">
+    <li class="post-list__item" v-for="(item, id) in propData" :key="id">{{ item.title }}</li>
+  </ul>
 </template>
 
 <script setup lang="ts">
@@ -15,13 +15,6 @@ defineProps<IProps>()
 
 <style lang="scss">
 .post-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $gap;
-
-  &__item {
-    padding: $gap;
-    border: 1px solid $color-text;
-  }
+  padding-left: $gap;
 }
 </style>

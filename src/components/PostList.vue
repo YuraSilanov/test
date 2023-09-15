@@ -1,7 +1,12 @@
 <template>
-  <ul class="post-list">
-    <li class="post-list__item" v-for="(item, id) in propData" :key="id">{{ item.title }}</li>
-  </ul>
+  <div class="post-list">
+    <ul v-if="propData.length" class="post-list__ul">
+      <li v-for="(item, id) in propData" :key="id">{{ item.title }}</li>
+    </ul>
+    <div class="post-list__empty">
+      <strong>По вашему фильтру ничего не найдено(</strong>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -15,6 +20,8 @@ defineProps<IProps>()
 
 <style lang="scss">
 .post-list {
-  padding-left: $gap;
+  &__ul {
+    padding-left: $gap;
+  }
 }
 </style>

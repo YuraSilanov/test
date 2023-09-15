@@ -1,8 +1,13 @@
 <template>
   <div class="app">
     <main>
-      <Input class="app__input" placeholder="Введите для фильтрации" v-model="inputValue" />
-      <PostList :prop-data="filteredPosts" />
+      <template v-if="posts.length">
+        <Input class="app__input" placeholder="Введите для фильтрации" v-model="inputValue" />
+        <PostList :prop-data="filteredPosts" />
+      </template>
+      <template v-else>
+        <div>Загрузка</div>
+      </template>
     </main>
   </div>
 </template>
@@ -17,22 +22,27 @@ import PostList from './components/PostList.vue'
 import type { IPost } from './interfaces'
 
 const inputValue = ref('')
-let posts: IPost[] = []
+const posts = ref<IPost[]>([])
 const filteredPosts = ref<IPost[]>([])
 
 const delayedUpdate = debounce(() => {
   if (!inputValue.value) {
-    filteredPosts.value = posts
+    filteredPosts.value = posts.value
   } else {
-    filteredPosts.value = posts.filter((post) =>
-      post.title.toLowerCase().includes(inputValue.value.toLowerCase())
-    )
+    filteredPosts.value = posts.value.filter((post) => {
+      const inputValueWords = inputValue.value.toLowerCase().split(' ')
+      const titleWords = post.title.toLowerCase().split(' ')
+
+      return inputValueWords.every((word) =>
+        titleWords.some((titleWord) => titleWord.includes(word))
+      )
+    })
   }
 }, 500)
 
 onMounted(async () => {
-  posts = await getPosts()
-  filteredPosts.value = posts
+  posts.value = await getPosts()
+  filteredPosts.value = posts.value
 })
 
 watch(inputValue, () => {

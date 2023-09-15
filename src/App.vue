@@ -1,47 +1,49 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="app">
+    <main>
+      <Input class="app__input" placeholder="Введите для фильтрации" v-model="inputValue" />
+      <PostList :prop-data="filteredPosts" />
+    </main>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup lang="ts">
+import { debounce } from 'lodash'
+import { onMounted, ref, watch } from 'vue'
+import { getPosts } from './services/posts'
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+import Input from './components/ui/form/Input.vue'
+import PostList from './components/PostList.vue'
+import type { IPost } from './interfaces'
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+const inputValue = ref('')
+let posts: IPost[] = []
+const filteredPosts = ref<IPost[]>([])
+
+const delayedUpdate = debounce(() => {
+  if (!inputValue.value) {
+    filteredPosts.value = posts
+  } else {
+    filteredPosts.value = posts.filter((post) => post.title.includes(inputValue.value))
   }
+}, 500)
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+onMounted(async () => {
+  posts = await getPosts()
+  filteredPosts.value = posts
+})
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+watch(inputValue, () => {
+  delayedUpdate()
+})
+</script>
+
+<style lang="scss">
+.app {
+  padding: $gap;
+
+  &__input {
+    margin-bottom: $gap;
   }
 }
 </style>
